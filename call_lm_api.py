@@ -1,29 +1,42 @@
-import re
 import requests
-
-def clean_transcript(transcript):
-    # 移除時間戳和空白音訊
-    cleaned_text = re.sub(r"\[\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3}\]\s*", "", transcript)
-    cleaned_text = cleaned_text.replace("[BLANK_AUDIO]", "").strip()
-    return cleaned_text
+import json
 
 def send_to_llm_studio(transcript):
-    url = "http://<LLM_API_IP>:<PORT>/api/chat"
-    payload = {"message": transcript}
+    # 設定 LM Studio API 的地址
+    url = "http://192.168.50.36:1234/v1/chat/completions"
+
+    # 構造 POST 請求的資料
+    payload = {
+        "model": "causallm-14b",  # 使用你的模型名稱
+        "messages": [
+            {"role": "user", "content": transcript}
+        ],
+        "temperature": 0.7  # 可調整生成的隨機性
+    }
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
     try:
-        response = requests.post(url, data=payload)
+        # 發送 POST 請求
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+        # 處理回應
         if response.status_code == 200:
-            return response.json().get("response", "無法獲取回應")
+            result = response.json()
+            return result["choices"][0]["message"]["content"]  # 返回生成的回應
         else:
-            return f"API 錯誤：{response.status_code}"
+            return f"API 錯誤：{response.status_code}，{response.text}"
+
     except Exception as e:
         return f"無法連接到 API：{str(e)}"
 
+
 if __name__ == "__main__":
+    # 測試：讀取 `transcript.txt` 並發送到 LLM Studio
     with open("transcript.txt", "r", encoding="utf-8") as f:
-        raw_transcript = f.read()
-        transcript = clean_transcript(raw_transcript)
-	print(f"transcript before lm studio: {transcript}")
+        transcript = f.read().strip()
         reply = send_to_llm_studio(transcript)
         print(f"LLM Studio 的回應：{reply}")
 
