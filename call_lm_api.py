@@ -1,4 +1,11 @@
+import re
 import requests
+
+def clean_transcript(transcript):
+    # 移除時間戳和空白音訊
+    cleaned_text = re.sub(r"\[\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3}\]\s*", "", transcript)
+    cleaned_text = cleaned_text.replace("[BLANK_AUDIO]", "").strip()
+    return cleaned_text
 
 def send_to_llm_studio(transcript):
     url = "http://<LLM_API_IP>:<PORT>/api/chat"
@@ -14,8 +21,9 @@ def send_to_llm_studio(transcript):
 
 if __name__ == "__main__":
     with open("transcript.txt", "r", encoding="utf-8") as f:
-        transcript = f.read().strip()
-	print(f"transcript before lm studio = {transcript}")
+        raw_transcript = f.read()
+        transcript = clean_transcript(raw_transcript)
+	print(f"transcript before lm studio: {transcript}")
         reply = send_to_llm_studio(transcript)
         print(f"LLM Studio 的回應：{reply}")
 
