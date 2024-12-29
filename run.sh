@@ -19,6 +19,7 @@ arecord -D hw:3,0 -f S16_LE -c 1 -r 16000 transcript.wav
   -otxt --no-timestamps
 
 TRANSCRIPT=$(cat transcript.wav.txt)
+#TRANSCRIPT=$(cat test_mono.wav.txt)
 echo "轉寫結果：$TRANSCRIPT"
 
 # 4) 呼叫 LM Studio API
@@ -26,6 +27,8 @@ echo "轉寫結果：$TRANSCRIPT"
 #   注意：如果是 /v1/completions endpoint，請改用 OpenAI Completions 格式
 #         如果是 /v1/chat/completions endpoint，則用 ChatCompletion 格式
 #   下例以 ChatCompletion 為範例
+#   curl -s : 為隱藏傳輸進度，可以刪掉-s 來看進度條
+#   POST http://........ 為 lm studio 之 server ip + api 
 RESPONSE=$(curl -s -X POST http://192.168.50.196:1234/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
@@ -42,5 +45,5 @@ echo "模型回應：$ASSISTANT_REPLY"
 
 # 5) (選擇性) 用 TTS 工具讀出聲音
 #    例如 espeak:
-espeak "$ASSISTANT_REPLY"
+#espeak "$ASSISTANT_REPLY"
 
