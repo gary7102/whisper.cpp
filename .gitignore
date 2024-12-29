@@ -58,3 +58,8 @@ cmake-build-debug/
 .cxx/
 .gradle/
 local.properties
+
+
+#### add in 2024/12/29
+test_mono.wav.txt
+transcript.txt
