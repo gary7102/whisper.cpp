@@ -62,7 +62,7 @@ struct whisper_params {
     bool output_jsn      = false;
     bool output_jsn_full = false;
     bool output_lrc      = false;
-    bool no_prints       = false;
+    bool no_prints       = true;
     bool print_special   = false;
     bool print_colors    = false;
     bool print_progress  = false;
@@ -366,7 +366,8 @@ static bool output_txt(struct whisper_context * ctx, const char * fname, const w
         return false;
     }
 
-    fprintf(stderr, "%s: saving output to '%s'\n", __func__, fname);
+    // do not print saving output message
+    // fprintf(stderr, "%s: saving output to '%s'\n", __func__, fname);
 
     const int n_segments = whisper_full_n_segments(ctx);
     for (int i = 0; i < n_segments; ++i) {
