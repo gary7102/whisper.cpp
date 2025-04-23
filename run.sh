@@ -6,7 +6,8 @@
 
 # 1) 錄音：按下空白鍵或 Ctrl+C 手動中斷
 echo "開始錄音... (按 Ctrl+C 結束)"
-arecord -D hw:3,0 -f S16_LE -c 1 -r 16000 transcript.wav
+#arecord -D hw:3,0 -f S16_LE -c 1 -r 16000 transcript.wav
+#arecord  transcript_before.wav
 
 # 2) (可選) 若需要轉成單聲道 16kHz
 echo "開始轉檔成channel 1 且 sample rate 16Khz"
